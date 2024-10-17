@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  - This file is part of the QuestionPy Moodle plugin - https://questionpy.org/
+  -
+  - Moodle is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - Moodle is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  - GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="icon.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   inkscape:export-filename="icon.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="32"
+     inkscape:cx="5.015625"
+     inkscape:cy="12.46875"
+     inkscape:window-width="1916"
+     inkscape:window-height="1144"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer2"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     lock-margins="false"
+     units="px"
+     width="16px"
+     scale-x="0.26458"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid13128"
+       originx="0"
+       originy="0"
+       spacingy="1"
+       spacingx="1"
+       units="px"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="Yellow">
+      <stop
+         style="stop-color:#ffe052;stop-opacity:1"
+         offset="0"
+         id="stop10984" />
+      <stop
+         style="stop-color:#ffc331;stop-opacity:1"
+         offset="1"
+         id="stop10986" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="Blue-0">
+      <stop
+         style="stop-color:#366994;stop-opacity:1"
+         offset="0"
+         id="stop4344" />
+      <stop
+         style="stop-color:#387eb8;stop-opacity:1"
+         offset="1"
+         id="stop4346" />
+    </linearGradient>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path941" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#Yellow"
+       id="linearGradient18036"
+       x1="48.947918"
+       y1="251.35417"
+       x2="71.4375"
+       y2="227.54167"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#Blue-0"
+       id="linearGradient21955"
+       gradientUnits="userSpaceOnUse"
+       x1="50.270832"
+       y1="250.03125"
+       x2="71.4375"
+       y2="228.86458" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#Blue-0"
+       id="linearGradient23356"
+       gradientUnits="userSpaceOnUse"
+       x1="68.791664"
+       y1="273.84375"
+       x2="93.927086"
+       y2="248.70833" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#Blue-0"
+       id="linearGradient23358"
+       gradientUnits="userSpaceOnUse"
+       x1="46.302082"
+       y1="248.70833"
+       x2="68.791664"
+       y2="223.57291" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#Yellow"
+       id="linearGradient25952"
+       gradientUnits="userSpaceOnUse"
+       x1="44.979168"
+       y1="247.38542"
+       x2="67.46875"
+       y2="223.57292" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#Yellow"
+       id="linearGradient26146"
+       gradientUnits="userSpaceOnUse"
+       x1="70.114586"
+       y1="272.52084"
+       x2="93.927086"
+       y2="248.70834" />
+  </defs>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-112.11458,-232.50002)"
+     sodipodi:insensitive="true">
+    <g
+       id="g17826-1"
+       transform="matrix(0.19493047,0,0,0.19493047,111.34677,195.11369)"
+       style="stroke:url(#linearGradient18036)">
+      <path
+         style="fill:none;stroke:url(#linearGradient25952);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 39.6875,236.80208 v -7.93749 c 0,-14.55209 21.166667,-14.55209 21.166667,-1.32292 v 13.22916 l 11.90625,11.90625"
+         id="path857-6-0-7-7"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         style="fill:none;stroke:url(#linearGradient26146);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 80.697917,260.61458 1.322916,1.32292"
+         id="path16894-5"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       id="g17826-1-6"
+       transform="matrix(-0.19493047,0,0,-0.19493047,128.88239,285.88634)"
+       style="fill:none;fill-opacity:1;stroke:url(#linearGradient21955);stroke-width:8;stroke-miterlimit:4;stroke-dasharray:none">
+      <path
+         style="fill-opacity:1;stroke:url(#linearGradient23358);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 39.6875,236.80208 v -7.93749 c 0,-14.55209 21.166667,-14.55209 21.166667,-1.32292 v 13.22916 l 11.90625,11.90625"
+         id="path857-6-0-7-7-4"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         style="fill-opacity:1;stroke:url(#linearGradient23356);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 80.697917,260.61458 1.322916,1.32292"
+         id="path16894-5-3"
+         sodipodi:nodetypes="cc" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Ebene 2">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.15;font-family:sans-serif;letter-spacing:-0.5px;vector-effect:non-scaling-stroke;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline"
+       x="0.0093717575"
+       y="15.416653"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         x="0.0093717575"
+         y="15.416653"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.15;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';letter-spacing:-0.5px;vector-effect:non-scaling-stroke;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;-inkscape-stroke:hairline">B</tspan></text>
+  </g>
+</svg>
