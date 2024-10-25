@@ -23,5 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_questionpy_type extends question_behaviour_type {
-    // FIXME: The question engine never tells us what the original question behaviour type is, so we can't delegate.
+    // The (base) class methods here are only relevant for archetypal behaviours, which our plugin is not!
+    // Moodle uses this information for example to hide some options in the quiz settings when a
+    // behaviour is selected. Our behaviour is not selectable in the quiz settings.
+    // That is why we do not need to do anything here.
 }
