@@ -14,18 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use qtype_questionpy\constants;
-
 /**
  * Custom question behaviour for QuestionPy.
  *
  * This behaviour delegates almost all calls to the behaviour which the question would ordinarily have used (deferred,
  * adaptive, immediate, etc.), but it
- * - allows access to the entire {@see question_attempt} (questions are only provided the first step),
- * - allows access to the {@see question_attempt_pending_step pending step} while an action is being processed,
- * - adds the QPy question state and attempt state to the {@see question_display_options::$extrahistorycontent} to be
- *   displayed,
- * - adds the QPy scoring state (if any) to the state string.
+ * - allows access to the entire {@see question_attempt} (questions are only provided the first step) and
+ * - allows access to the {@see question_attempt_pending_step pending step} while an action is being processed.
  *
  * @package    qbehaviour_questionpy
  * @author     Maximilian Haye
@@ -169,16 +164,6 @@ class qbehaviour_questionpy extends question_behaviour {
      */
     public function render(question_display_options $options, $number, core_question_renderer $qoutput,
                            qtype_renderer $qtoutput): string {
-        /* The method adjust_display_options is meant for this but it gets called from inside the delegate, so we can't
-           effectively override it. */
-        $options = clone($options);
-        $options->extrahistorycontent .= html_writer::start_div("m-2");
-        $options->extrahistorycontent .= "<details open><summary>Question State:</summary><pre><code>"
-            . s($this->question->questionstate) . "</code></pre></details>";
-        $options->extrahistorycontent .= "<details open><summary>Attempt State:</summary><pre><code>"
-            . s($this->qa->get_last_qt_var(constants::QT_VAR_ATTEMPT_STATE)) . "</code></pre></details>";
-        $options->extrahistorycontent .= html_writer::end_div();
-
         return $this->delegate->render($options, $number, $qoutput, $qtoutput);
     }
 
@@ -191,15 +176,7 @@ class qbehaviour_questionpy extends question_behaviour {
      * @return string a brief summary of the current state of the qestion attempt.
      */
     public function get_state_string($showcorrectness): string {
-        $result = $this->delegate->get_state_string($showcorrectness);
-        $scoringstate = $this->qa->get_last_qt_var(constants::QT_VAR_SCORING_STATE);
-        if ($scoringstate !== null) {
-            $result .= '<div><small class="font-weight-normal"><details><summary>QuestionPy Scoring State</summary>'
-                . $scoringstate . '</details></small></div>';
-        } else if ($this->qa->get_state()->is_graded()) {
-            $result .= '<div><small class="font-weight-normal">No QuestionPy Scoring State</small></div>';
-        }
-        return $result;
+        return $this->delegate->get_state_string($showcorrectness);
     }
 
     // The rest we just delegate.
