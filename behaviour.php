@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core\di;
+use qbehaviour_questionpy\subdir_question_file_saver;
+use qtype_questionpy\constants;
+use qtype_questionpy\local\files\attempt_file_service;
+
 /**
  * Custom question behaviour for QuestionPy.
  *
@@ -29,13 +34,16 @@
  */
 class qbehaviour_questionpy extends question_behaviour {
     /** @var string */
-    private const QB_VAR_BEHAVIOUR = "_behaviour";
+    private const QB_VAR_BEHAVIOUR = '_behaviour';
 
     /** @var question_behaviour */
     private question_behaviour $delegate;
 
     /** @var question_attempt_pending_step|null */
     private ?question_attempt_pending_step $pendingstep = null;
+
+    /** @var attempt_file_service */
+    private readonly attempt_file_service $afs;
 
     /**
      * Initializes the behaviour for the given attempt.
@@ -67,6 +75,8 @@ class qbehaviour_questionpy extends question_behaviour {
         if ($this->question instanceof qtype_questionpy_question) {
             $this->question->behaviour = $this;
         }
+
+        $this->afs = di::get(attempt_file_service::class);
     }
 
     /**
@@ -78,7 +88,7 @@ class qbehaviour_questionpy extends question_behaviour {
      */
     public function get_pending_step(): question_attempt_pending_step {
         if ($this->pendingstep === null) {
-            throw new coding_exception("pendingstep is not set, we are probably not currently processing an action");
+            throw new coding_exception('pendingstep is not set, we are probably not currently processing an action');
         }
         return $this->pendingstep;
     }
@@ -102,7 +112,7 @@ class qbehaviour_questionpy extends question_behaviour {
      * @param question_definition $question the question.
      */
     public function is_compatible_question(question_definition $question): bool {
-        return $question->get_type_name() === "questionpy";
+        return $question->get_type_name() === 'questionpy';
     }
 
     /**
@@ -112,19 +122,34 @@ class qbehaviour_questionpy extends question_behaviour {
      * qbehaviour_mymodle is 'mymodel'.
      */
     public function get_name(): string {
-        return "questionpy";
+        return 'questionpy';
     }
 
     // The methods we actually care about:.
 
     /**
-     * Sets the pending step for {@see get_pending_step} and delegates processing.
+     * Sets the pending step for {@see get_pending_step}, handles files, then delegates processing.
      *
      * @param question_attempt_pending_step $pendingstep
      * @return bool
      * @throws coding_exception
+     * @throws file_exception
+     * @throws moodle_exception
+     * @throws stored_file_creation_exception
      */
     public function process_action(question_attempt_pending_step $pendingstep): bool {
+        global $USER;
+
+        $draftareasjson = $pendingstep->get_qt_var(constants::QT_VAR_DRAFT_AREAS);
+        $draftareas = $draftareasjson ? json_decode($draftareasjson, associative: true, depth: 2) : [];
+
+        if ($draftareas) {
+            $combineddraftarea = $this->afs->combine_attempt_file_draft_areas($draftareas, $USER->id);
+            $saver = new subdir_question_file_saver($combineddraftarea, 'question', constants::FILEAREA_ATTEMPT_FILES);
+            $pendingstep->set_qt_var(constants::QT_VAR_ATTEMPT_FILES, $saver);
+            // TODO: Update qpy_response with info about the submitted files, or find another way to tell the package.
+        }
+
         $this->pendingstep = $pendingstep;
         try {
             return $this->delegate->process_action($pendingstep);
