@@ -217,6 +217,13 @@ class qbehaviour_questionpy extends question_behaviour {
 
         $draftareasjson = optional_param($this->qa->get_field_prefix() . constants::FORM_DRAFT_AREAS, null, PARAM_RAW_TRIMMED);
         $draftareas = $draftareasjson ? json_decode($draftareasjson, associative: true, depth: 2) : [];
+        if (
+            !is_array($draftareas)
+            || array_filter($draftareas, fn($value, $key) => !is_string($key) || !is_int($value), ARRAY_FILTER_USE_BOTH)
+        ) {
+            debugging(constants::FORM_DRAFT_AREAS . ' is not valid.', DEBUG_DEVELOPER);
+            $draftareas = null;
+        }
 
         if ($combineddraftarea && $draftareas) {
             // New submission, combine the draft areas. (Which should be empty at this point.)
