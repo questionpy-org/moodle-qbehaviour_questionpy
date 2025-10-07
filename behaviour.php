@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use core\di;
-use qbehaviour_questionpy\subdir_question_file_saver;
 use qtype_questionpy\constants;
 use qtype_questionpy\local\files\attempt_file_service;
 
@@ -138,17 +137,7 @@ class qbehaviour_questionpy extends question_behaviour {
      * @throws stored_file_creation_exception
      */
     public function process_action(question_attempt_pending_step $pendingstep): bool {
-        global $USER;
-
-        $draftareasjson = $pendingstep->get_qt_var(constants::QT_VAR_DRAFT_AREAS);
-        $draftareas = $draftareasjson ? json_decode($draftareasjson, associative: true, depth: 2) : [];
-
-        if ($draftareas) {
-            $combineddraftarea = $this->afs->combine_attempt_file_draft_areas($draftareas, $USER->id);
-            $saver = new subdir_question_file_saver($combineddraftarea, 'question', constants::FILEAREA_ATTEMPT_FILES);
-            $pendingstep->set_qt_var(constants::QT_VAR_ATTEMPT_FILES, $saver);
-            // TODO: Update qpy_response with info about the submitted files, or find another way to tell the package.
-        }
+        $this->handle_files_in_pending_step($pendingstep);
 
         $this->pendingstep = $pendingstep;
         try {
@@ -156,6 +145,87 @@ class qbehaviour_questionpy extends question_behaviour {
         } finally {
             $this->pendingstep = null;
         }
+    }
+
+
+    /**
+     * Sets the pending step for {@see get_pending_step}, handles files, then delegates processing.
+     *
+     * @param question_attempt_pending_step $pendingstep
+     * @return bool
+     * @throws coding_exception
+     * @throws file_exception
+     * @throws moodle_exception
+     * @throws stored_file_creation_exception
+     */
+    public function process_autosave(question_attempt_pending_step $pendingstep): bool {
+        $this->handle_files_in_pending_step($pendingstep);
+
+        $this->pendingstep = $pendingstep;
+        try {
+            return $this->delegate->process_autosave($pendingstep);
+        } finally {
+            $this->pendingstep = null;
+        }
+    }
+
+    /**
+     * Handle files for a new or regraded pending step, making sure that draft areas are combined and will be saved.
+     *
+     * @param question_attempt_pending_step $pendingstep
+     * @throws coding_exception
+     * @throws file_exception
+     * @throws moodle_exception
+     * @throws stored_file_creation_exception
+     */
+    private function handle_files_in_pending_step(question_attempt_pending_step $pendingstep): void {
+        global $USER;
+
+        $files = $pendingstep->get_qt_var(constants::QT_VAR_ATTEMPT_FILES);
+        $combineddraftarea = optional_param($this->qa->get_field_prefix() . constants::QT_VAR_ATTEMPT_FILES, null, PARAM_INT);
+
+        if ($files === null) {
+            return;
+        }
+
+        if ($files instanceof question_file_loader) {
+            if ($pendingstep->get_id() !== null) {
+                // Looks like this step is being regraded, in which case it will keep its step ID, and we don't need to move files.
+                return;
+            }
+
+            // TODO: Is this hack necessary, or does an autosave with files get correctly regraded without it?
+            // $files = (fn() => $this->data[constants::QT_VAR_ATTEMPT_FILES] = $files->get_question_file_saver())
+            // ->call($pendingstep);
+        }
+
+        if (!($files instanceof question_file_saver)) {
+            throw new coding_exception("qt var '" . constants::QT_VAR_ATTEMPT_FILES . "' is not a question_file_saver");
+        }
+
+        if (strval($files)) {
+            // Already contains files -> this is not a new (but, for instance, regraded) step. No need to save anything.
+            return;
+        }
+
+        // TODO: Remove this sanity check once sure stuff works.
+        $draftareafromsaver = (fn() => $this->draftitemid)->call($files);
+        if ($draftareafromsaver != $combineddraftarea) {
+            throw new coding_exception('question_file_saver and optional_param draft area do not match: '
+                . "'$draftareafromsaver' != '$combineddraftarea'");
+        }
+
+        $draftareasjson = optional_param($this->qa->get_field_prefix() . constants::FORM_DRAFT_AREAS, null, PARAM_RAW_TRIMMED);
+        $draftareas = $draftareasjson ? json_decode($draftareasjson, associative: true, depth: 2) : [];
+
+        if ($combineddraftarea && $draftareas) {
+            // New submission, combine the draft areas. (Which should be empty at this point.)
+            $this->afs->combine_attempt_file_draft_areas($draftareas, $combineddraftarea, $USER->id);
+            // Call the saver's constructor again to recalculate the hash. (Yeah, this is our best option.)
+            $files->__construct($combineddraftarea, 'question', constants::FILEAREA_ATTEMPT_FILES);
+        }
+
+        // TODO: Update qpy_response with info about the submitted files, or find another way to tell the package.
     }
 
     /**
@@ -175,6 +245,7 @@ class qbehaviour_questionpy extends question_behaviour {
         $step->set_behaviour_var(self::QB_VAR_BEHAVIOUR, $this->delegate->get_name());
     }
 
+    // The rest we just delegate.
 
     /**
      * Cause the question to be renderered. This gets the appropriate behaviour
@@ -203,8 +274,6 @@ class qbehaviour_questionpy extends question_behaviour {
     public function get_state_string($showcorrectness): string {
         return $this->delegate->get_state_string($showcorrectness);
     }
-
-    // The rest we just delegate.
 
     /**
      * Whether the current attempt at this question could be completed just by the
@@ -394,19 +463,6 @@ class qbehaviour_questionpy extends question_behaviour {
      */
     public function apply_attempt_state(question_attempt_step $step): void {
         $this->delegate->apply_attempt_state($step);
-    }
-
-    /**
-     * Auto-saved data. By default this does nothing. interesting processing is
-     * done in {@see question_behaviour_with_save}.
-     *
-     * @param question_attempt_pending_step $pendingstep a partially initialised step
-     *      containing all the information about the action that is being peformed. This
-     *      information can be accessed using {@see question_attempt_step::get_behaviour_var()}.
-     * @return bool either {@see question_attempt::KEEP} or {@see question_attempt::DISCARD}
-     */
-    public function process_autosave(question_attempt_pending_step $pendingstep): bool {
-        return $this->delegate->process_autosave($pendingstep);
     }
 
     /**
