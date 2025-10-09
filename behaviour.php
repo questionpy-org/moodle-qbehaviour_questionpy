@@ -16,7 +16,7 @@
 
 use core\di;
 use qtype_questionpy\constants;
-use qtype_questionpy\local\files\attempt_file_service;
+use qtype_questionpy\local\files\response_file_service;
 
 /**
  * Custom question behaviour for QuestionPy.
@@ -41,8 +41,8 @@ class qbehaviour_questionpy extends question_behaviour {
     /** @var question_attempt_pending_step|null */
     private ?question_attempt_pending_step $pendingstep = null;
 
-    /** @var attempt_file_service */
-    private readonly attempt_file_service $afs;
+    /** @var response_file_service */
+    private readonly response_file_service $afs;
 
     /**
      * Initializes the behaviour for the given attempt.
@@ -75,7 +75,7 @@ class qbehaviour_questionpy extends question_behaviour {
             $this->question->behaviour = $this;
         }
 
-        $this->afs = di::get(attempt_file_service::class);
+        $this->afs = di::get(response_file_service::class);
     }
 
     /**
@@ -181,8 +181,8 @@ class qbehaviour_questionpy extends question_behaviour {
     private function handle_files_in_pending_step(question_attempt_pending_step $pendingstep): void {
         global $USER;
 
-        $files = $pendingstep->get_qt_var(constants::QT_VAR_ATTEMPT_FILES);
-        $combineddraftarea = optional_param($this->qa->get_field_prefix() . constants::QT_VAR_ATTEMPT_FILES, null, PARAM_INT);
+        $files = $pendingstep->get_qt_var(constants::QT_VAR_RESPONSE_FILES);
+        $combineddraftarea = optional_param($this->qa->get_field_prefix() . constants::QT_VAR_RESPONSE_FILES, null, PARAM_INT);
 
         if ($files === null) {
             return;
@@ -195,12 +195,12 @@ class qbehaviour_questionpy extends question_behaviour {
             }
 
             // TODO: Is this hack necessary, or does an autosave with files get correctly regraded without it?
-            // $files = (fn() => $this->data[constants::QT_VAR_ATTEMPT_FILES] = $files->get_question_file_saver())
+            // $files = (fn() => $this->data[constants::QT_VAR_RESPONSE_FILES] = $files->get_question_file_saver())
             // ->call($pendingstep);
         }
 
         if (!($files instanceof question_file_saver)) {
-            throw new coding_exception("qt var '" . constants::QT_VAR_ATTEMPT_FILES . "' is not a question_file_saver");
+            throw new coding_exception("qt var '" . constants::QT_VAR_RESPONSE_FILES . "' is not a question_file_saver");
         }
 
         if (strval($files)) {
@@ -227,9 +227,9 @@ class qbehaviour_questionpy extends question_behaviour {
 
         if ($combineddraftarea && $draftareas) {
             // New submission, combine the draft areas. (Which should be empty at this point.)
-            $this->afs->combine_attempt_file_draft_areas($draftareas, $combineddraftarea, $USER->id);
+            $this->afs->combine_response_file_draft_areas($draftareas, $combineddraftarea, $USER->id);
             // Call the saver's constructor again to recalculate the hash. (Yeah, this is our best option.)
-            $files->__construct($combineddraftarea, 'question', constants::FILEAREA_ATTEMPT_FILES);
+            $files->__construct($combineddraftarea, 'question', constants::FILEAREA_RESPONSE_FILES);
         }
 
         // TODO: Update qpy_response with info about the submitted files, or find another way to tell the package.
