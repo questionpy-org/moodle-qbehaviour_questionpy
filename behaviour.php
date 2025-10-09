@@ -206,11 +206,6 @@ class qbehaviour_questionpy extends question_behaviour {
             throw new coding_exception("qt var '" . constants::QT_VAR_RESPONSE_FILES . "' is not a question_file_saver");
         }
 
-        if (strval($files)) {
-            // Already contains files -> this is not a new (but, for instance, regraded) step. No need to save anything.
-            return;
-        }
-
         // TODO: Remove this sanity check once sure stuff works.
         $draftareafromsaver = (fn() => $this->draftitemid)->call($files);
         if ($draftareafromsaver != $combineddraftarea) {
