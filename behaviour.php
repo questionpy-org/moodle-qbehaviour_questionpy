@@ -194,9 +194,12 @@ class qbehaviour_questionpy extends question_behaviour {
                 return;
             }
 
-            // TODO: Is this hack necessary, or does an autosave with files get correctly regraded without it?
-            // $files = (fn() => $this->data[constants::QT_VAR_RESPONSE_FILES] = $files->get_question_file_saver())
-            // ->call($pendingstep);
+            // This appears to be a bug in Moodle: Normal regraded steps keep the old ID, so files (which are stored under the step
+            // ID) remain accessible. Autosaved steps, for whatever reason, though, do not keep the ID, so we need to move the
+            // files.
+            // We use a bound closure to access the private property, which is a hack, but necessary.
+            $files = (fn() => $this->data[constants::QT_VAR_RESPONSE_FILES] = $files->get_question_file_saver())
+                ->call($pendingstep);
         }
 
         if (!($files instanceof question_file_saver)) {
