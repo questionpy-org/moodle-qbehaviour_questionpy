@@ -42,7 +42,7 @@ class qbehaviour_questionpy extends question_behaviour {
     private ?question_attempt_pending_step $pendingstep = null;
 
     /** @var response_file_service */
-    private readonly response_file_service $afs;
+    private readonly response_file_service $rfs;
 
     /**
      * Initializes the behaviour for the given attempt.
@@ -75,7 +75,7 @@ class qbehaviour_questionpy extends question_behaviour {
             $this->question->behaviour = $this;
         }
 
-        $this->afs = di::get(response_file_service::class);
+        $this->rfs = di::get(response_file_service::class);
     }
 
     /**
@@ -224,8 +224,20 @@ class qbehaviour_questionpy extends question_behaviour {
         }
 
         if ($combineddraftarea && $draftareas) {
-            // New submission, combine the draft areas. (Which should be empty at this point.)
-            $this->afs->combine_response_file_draft_areas($draftareas, $combineddraftarea, $USER->id);
+            assert($this->question instanceof qtype_questionpy_question);
+            // New submission, combine the draft areas.
+            $this->rfs->combine_response_file_draft_areas($draftareas, $combineddraftarea, $USER->id);
+
+            $uploadfields = $this->question->metadata->get_upload_limits();
+
+            global $PAGE;
+            $this->rfs->validate_combined_draft_area(
+                $combineddraftarea,
+                $uploadfields,
+                $USER->id,
+                $PAGE->context,
+            );
+
             // Call the saver's constructor again to recalculate the hash. (Yeah, this is our best option.)
             $files->__construct($combineddraftarea, 'question', constants::FILEAREA_RESPONSE_FILES);
         }
