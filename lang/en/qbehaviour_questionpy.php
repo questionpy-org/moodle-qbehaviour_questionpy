@@ -24,3 +24,4 @@
 
 $string['pluginname'] = 'QuestionPy Behaviour';
 $string['pluginname_help'] = 'Behaviour for the QuestionPy question type.';
+$string['summary_error'] = 'There was an error while scoring the question. ({$a})';
