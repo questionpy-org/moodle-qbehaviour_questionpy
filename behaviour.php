@@ -272,11 +272,11 @@ class qbehaviour_questionpy extends question_behaviour {
      * @throws coding_exception
      */
     public function summarise_action(question_attempt_step $step): string {
-        $error = $step->get_qt_var(constants::QT_VAR_ERROR);
         $summary = $step->has_behaviour_var('finish')
             ? get_string('attemptfinished', 'question')
             : $this->delegate->summarise_action($step);
 
+        $error = $step->get_qt_var(constants::QT_VAR_ERROR);
         if ($error !== null) {
             $message = get_string('summary_error', 'qbehaviour_questionpy', s($error));
             $summary .= " [$message]";
