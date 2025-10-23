@@ -31,5 +31,5 @@ $plugin->maturity = MATURITY_ALPHA;
 $plugin->release = '0.1';
 
 $plugin->dependencies = [
-    "qtype_questionpy" => 2025100600,
+    "qtype_questionpy" => 2025102300,
 ];
