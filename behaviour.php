@@ -228,14 +228,13 @@ class qbehaviour_questionpy extends question_behaviour {
             // New submission, combine the draft areas.
             $this->rfs->combine_response_file_draft_areas($draftareas, $combineddraftarea, $USER->id);
 
-            $uploadfields = $this->question->metadata->get_upload_limits();
-
             global $PAGE;
+            $uploadlimits = $this->question->metadata->get_upload_limits($PAGE->context);
+
             $this->rfs->validate_combined_draft_area(
                 $combineddraftarea,
-                $uploadfields,
+                $uploadlimits,
                 $USER->id,
-                $PAGE->context,
             );
 
             // Call the saver's constructor again to recalculate the hash. (Yeah, this is our best option.)
@@ -260,29 +259,6 @@ class qbehaviour_questionpy extends question_behaviour {
     public function init_first_step(question_attempt_step $step, $variant): void {
         $this->delegate->init_first_step($step, $variant);
         $step->set_behaviour_var(self::QB_VAR_BEHAVIOUR, $this->delegate->get_name());
-    }
-
-    /**
-     * Produce a plain-text summary of what the user did during a step.
-     *
-     * Also view an error message if one was set.
-     *
-     * @param question_attempt_step $step the step in question.
-     * @return string a summary of what was done during that step.
-     * @throws coding_exception
-     */
-    public function summarise_action(question_attempt_step $step): string {
-        $summary = $step->has_behaviour_var('finish')
-            ? get_string('attemptfinished', 'question')
-            : $this->delegate->summarise_action($step);
-
-        $error = $step->get_qt_var(constants::QT_VAR_ERROR);
-        if ($error !== null) {
-            $message = get_string('summary_error', 'qbehaviour_questionpy', s($error));
-            $summary .= " [$message]";
-        }
-
-        return $summary;
     }
 
     // The rest we just delegate.
@@ -478,6 +454,17 @@ class qbehaviour_questionpy extends question_behaviour {
      */
     public function classify_response($whichtries = question_attempt::LAST_TRY): array {
         return $this->delegate->classify_response($whichtries);
+    }
+
+
+    /**
+     * Just delegates.
+     *
+     * @param question_attempt_step $step
+     * @return string
+     */
+    public function summarise_action(question_attempt_step $step): string {
+        return $this->delegate->summarise_action($step);
     }
 
     /**
